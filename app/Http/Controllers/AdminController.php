@@ -28,6 +28,11 @@ class AdminController extends Controller
             'password' => 'required|min:8',
             'position' => 'nullable',
             'department' => 'required|integer',
+            'role' => 'required',
+            'fname' => 'required',
+            'mname' => 'required',
+            'lname' => 'required',
+            'email' => 'required'
         ]);
 
         if($validated->fails()) {

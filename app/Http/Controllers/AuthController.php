@@ -42,7 +42,10 @@ class AuthController extends Controller
             'password' => 'required|min:8',
             'c_password' => 'required',
             'department' => 'required|integer',
-            'position' => 'nullable'
+            'position' => 'nullable',
+            'fname' => 'required',
+            'mname' => 'required',
+            'lname' => 'required'
         ]);
 
         if($validated->fails()) {

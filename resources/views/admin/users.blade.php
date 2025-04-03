@@ -38,9 +38,8 @@ Users
                         <p class="w-full text-left">Employee Information:</p>
                         <div class="flex flex-row">
                             <input type="text" name="username" placeholder="Username" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
-                            <input type="text" name="emp_id" placeholder="Employee ID" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                            <input type="text" name="email" placeholder="Email" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
                         </div>
-                        <p class="w-full text-left mt-5">Employee Position:</p>
                         <div class="flex flex-row">
                             <select name="department" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
                                 @foreach($departments as $department)
@@ -48,8 +47,22 @@ Users
                                 @endforeach
                             </select>
                             <input type="text" name="position" placeholder="Position" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                            <select name="role" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                                <option>L1</option>
+                                <option>L2</option>
+                                <option>L3</option>
+                                <option>L4</option>
+                            </select>
                         </div>
-                        <p class="w-full text-left mt-5">Enter Password:</p>
+                
+                        <p class="w-full text-left mt-5">Personal Information:</p>
+                        <div class="flex flex-row">
+                            <input type="text" name="fname" placeholder="First Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                            <input type="text" name="mname" placeholder="Middle Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                            <input type="text" name="lname" placeholder="Last Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                        </div>
+                
+                        <p class="w-full text-left mt-5">Enter New Password:</p>
                         <div class="flex flex-row">
                             <input type="password" name="password" placeholder="Password" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
                             <input type="password" name="c_password" placeholder="Confirm Password" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
@@ -84,7 +97,7 @@ Users
                         <td class="p-2 w-1/5">{{ $user->username }}</td>
                         <td class="p-2 w-1/5">{{ $user->emp_id }}</td>
                         <td class="p-2 w-1/5">{{ $user->department_description }}</td>
-                        <td class="p-2 w-1/5">{{ $user->failed_login_attempts }}</td>
+                        <td class="p-2 w-1/5">{{ $user->status != 0 ? $user->failed_login_attempts : "Locked" }}</td>
                         <td class="p-2 w-1/5 text-center">
 
                             <div x-data="{ open: false }">
@@ -104,16 +117,8 @@ Users
                                                 <p class="w-full text-left">Employee Information:</p>
                                                 <div class="flex flex-row">
                                                     <input type="text" name="username" value="{{ $user->username }}" placeholder="Username" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
-                                                    <input type="text" name="emp_id" value="{{ $user->emp_id }}" placeholder="Employee ID" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
                                                     <input type="text" name="email" value="{{ $user->email }}" placeholder="Email" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
                                                 </div>
-                                                <p class="w-full text-left mt-5">Personal Information:</p>
-                                                <div class="flex flex-row">
-                                                    <input type="text" name="fname" value="{{ $user->fname }}" placeholder="First Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
-                                                    <input type="text" name="mname" value="{{ $user->mname }}" placeholder="Middle Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
-                                                    <input type="text" name="lname" value="{{ $user->lname }}" placeholder="Last Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
-                                                </div>
-                                                <p class="w-full text-left mt-5">Employee Position:</p>
                                                 <div class="flex flex-row">
                                                     <select name="department" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
                                                         @foreach($departments as $department)
@@ -128,6 +133,14 @@ Users
                                                         <option {{ $user->role == "L4" ? "selected" : "" }}>L4</option>
                                                     </select>
                                                 </div>
+
+                                                <p class="w-full text-left mt-5">Personal Information:</p>
+                                                <div class="flex flex-row">
+                                                    <input type="text" name="fname" value="{{ $user->fname }}" placeholder="First Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                                                    <input type="text" name="mname" value="{{ $user->mname }}" placeholder="Middle Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                                                    <input type="text" name="lname" value="{{ $user->lname }}" placeholder="Last Name" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
+                                                </div>
+
                                                 <p class="w-full text-left mt-5">Enter New Password:</p>
                                                 <div class="flex flex-row">
                                                     <input type="password" name="password" placeholder="Password" class="border border-green-700 rounded-md p-2 m-1 w-full my-3">
@@ -147,7 +160,7 @@ Users
                                                 <form method="POST" action="{{ route('lock_unlock_user', $user->id) }}">
                                                   @csrf
                                                   @METHOD('PUT')
-                                                  <button class="bg-yellow-500 text-white p-1 px-3 w-full rounded-full">{{ $user->status == 1 ? 'Unlock User' : 'Lock User' }}</button>
+                                                  <button class="bg-yellow-500 text-white p-1 px-3 w-full rounded-full">{{ $user->status == 1 ? 'Lock User' : 'Unlock User' }}</button>
                                                 </form>
                                               </div>
                                               <div x-data="{ open: false }" class="w-1/2 m-1">
