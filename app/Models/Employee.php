@@ -11,20 +11,45 @@ use App\Models\Department;
 
 class Employee extends Authenticatable
 {
-    protected $fillable = ['username', 'password', 'fname', 'mname', 'lname', 'email', 'emp_id', 'department', 'position', 'status', 'active', 'role'];
+    protected $fillable = ['username', 'password', 'fname', 'mname', 'lname', 'email', 'emp_id', 'department', 'position', 'status', 'active', 'role', 'failed_login_attempts'];
 
     public static function login($credentials) {
         if (Auth::guard('employee')->attempt($credentials)) {
-            $user = Employee::where('username', $credentials['username'])->get();
-            session()->put('user', $user);
-            return json_encode([
-                "message" => "success"
-            ]);
-        }
+            $user = Employee::where('username', $credentials['username'])->first();
+            
+            if($user->status == 1) {
+              session()->put('user', $user);
+              return json_encode([
+                  "message" => "success"
+              ]);
+            } else {
+              return json_encode([
+                  "message" => "User locked."
+              ]);
+            }
+        } else {
+          $user = Employee::where('username', $credentials['username'])->first();
 
-        return json_encode([
-            "message" => "Invalid Credentials"
-        ]);
+          if($user->failed_login_attempts < 3) {
+            $user->update([
+              'failed_login_attempts' => $user->failed_login_attempts + 1
+            ]);
+          }
+
+          if($user->failed_login_attempts == 2) {
+            $user->update([
+              'status' => 0
+            ]);
+
+            return json_encode([
+              "message" => "User locked. Please contact ICT admin."
+            ]);
+          }
+
+          return json_encode([
+              "message" => "Invalid Credentials"
+          ]);
+        }
     }
 
     public static function signup($request) {
@@ -89,11 +114,12 @@ class Employee extends Authenticatable
         }
     }
 
-    public static function update_user($request) {
-        $user = Employee::where('emp_id', $request['emp_id']);
+    public static function update_user($request, $id) {
+        $user = Employee::where('id', $id);
         
         if($user != null) {
           $updated = $user->update([
+            'username' => $request['username'],
             'fname' => $request['fname'],
             'mname' => $request['mname'],
             'lname' => $request['lname'],
@@ -134,7 +160,8 @@ class Employee extends Authenticatable
         ]);
       } else {
         $user->update([
-          'status' => 1
+          'status' => 1,
+          'failed_login_attempts' => 0,
         ]);
       }
     }

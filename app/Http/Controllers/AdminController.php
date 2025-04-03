@@ -48,10 +48,9 @@ class AdminController extends Controller
         }
     }
 
-    public function update_user(Request $request) {
+    public function update_user(Request $request, $id) {
         $validated = Validator::make($request->all(), [
             'username' => 'required',
-            'emp_id' => 'required',
             'fname' => 'required',
             'mname' => 'required',
             'lname' => 'required',
@@ -59,7 +58,7 @@ class AdminController extends Controller
             'department' => 'required|integer',
             'position' => 'required',
             'role' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
         
         if($validated->fails()) {
@@ -70,7 +69,7 @@ class AdminController extends Controller
                 $validatedData['password'] = Hash::make($validatedData['password']);
                 
                 echo print_r($validatedData);
-                $employee = json_decode(Employee::update_user($validatedData));
+                $employee = json_decode(Employee::update_user($validatedData, $id));
                 
                 if($employee->status == 1) {
                   return redirect()->route('admin_users')->with('message', 'Update successfully!');
@@ -100,8 +99,9 @@ class AdminController extends Controller
     }
 
     public function departments() {
+        $employees = Employee::all_users();
         $departments = Department::all_departments();
-        return view('admin/departments', compact('departments'));
+        return view('admin/departments', compact('departments', 'employees'));
     }
 
     public function create_department(Request $request) {
@@ -118,6 +118,22 @@ class AdminController extends Controller
             $department = json_decode(Department::add_department($validatedData));
 
             return redirect()->route('admin_departments')->with('message', $department->message);
+        }
+    }
+
+    public function update_department(Request $request, $id) {
+        $validated = Validator::make($request->all(), [
+            'department_description' => 'required',
+            'department_code' => 'required',
+            'manager_id' => 'required|integer'
+        ]);
+
+        if($validated->fails()) {
+            return redirect()->back()->with('message', 'Edit unsuccessful!');
+        } else {
+            $department = json_decode(Department::update_department($validated->validated(), $id));
+
+            return redirect()->back()->with('message', $department->message);
         }
     }
 }

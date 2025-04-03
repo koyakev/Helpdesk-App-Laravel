@@ -65,7 +65,7 @@ class AuthController extends Controller
 
     public function dashboard() {
         if(session('user')) {
-            $user = session('user')[0];
+            $user = session('user');
 
             if($user->role == 'L1') {
                 return view('user/dashboard');

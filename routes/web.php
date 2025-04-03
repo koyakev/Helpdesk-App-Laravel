@@ -16,12 +16,13 @@ Route::group(['prefix' => 'admin'], function() {
     
     Route::get('/users', [AdminController::class, 'users'])->name('admin_users');
     Route::post('/users/create_user', [AdminController::class, 'create_user'])->name('create_user');
-    Route::put('/users/update_user', [AdminController::class, 'update_user'])->name('update_user');
+    Route::put('/users/update_user/{id}', [AdminController::class, 'update_user'])->name('update_user');
     Route::delete('/users/delete_user/{id}', [AdminController::class, 'delete_user'])->name('delete_user');
     Route::put('/users/lock_user/{id}', [AdminController::class, 'lock_unlock_user'])->name('lock_unlock_user');
     
     Route::get('/departments', [AdminController::class, 'departments'])->name('admin_departments');
     Route::post('/departments/create_department', [AdminController::class, 'create_department'])->name('create_department');
+    Route::put('/departments/update_department/{id}', [AdminController::class, 'update_department'])->name('update_department');
 });
 
 Route::group(['prefix' => 'user'], function() {

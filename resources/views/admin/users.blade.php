@@ -9,7 +9,8 @@ Users
 @if(session('message'))
   <div x-data="{ open: true }">
     <div x-show="open" x-cloak class="absolute top-0 left-0 w-full h-screen flex justify-center items-center">
-      <div class="h-auto bg-white shadow-sm shadow-green-400 rounded-xl p-3">
+      <div class="absolute h-screen w-full bg-black opacity-50"></div>
+      <div class="absolute h-auto bg-white shadow-sm shadow-green-400 rounded-xl p-3">
         <h1 class="my-4 text-lg font-bold">{{ session('message') }}</h1>
         <button class="bg-red-700 text-white p-1 px-3 m-1 rounded-full" @click="open = false">Okay</button>
       </div>
@@ -23,7 +24,8 @@ Users
     <div x-data="{ open: false }">
         <button @click="open = true" class="text-center align-center max-w-50 p-1 px-3 bg-yellow-400 text-white font-bold border rounded-full hover:bg-green-300">Create User</button>
         <div x-show="open" x-cloak class="absolute top-0 left-0 w-full h-screen flex justify-center items-center">
-            <div class="w-1/2 h-auto bg-white shadow-sm shadow-green-400 rounded-xl p-3">
+            <div class="absolute h-screen w-full bg-black opacity-50"></div>
+            <div class="absolute w-1/2 h-auto bg-white shadow-sm shadow-green-400 rounded-xl p-3">
                 <div class="flex w-full justify-end p-1">
                     <button @click="open = false">
                         <i class="fa fa-times-circle text-green-900" aria-hidden="true"></i>
@@ -103,7 +105,8 @@ Users
                             <div x-data="{ open: false }">
                                 <button @click="open = true" class="bg-green-900 p-1 px-3 rounded-full text-white">View</button>
                                 <div x-show="open" x-cloak class="absolute top-0 left-0 w-full h-screen flex justify-center items-center">
-                                    <div class="w-1/2 h-auto bg-white shadow-sm shadow-green-400 rounded-xl p-3">
+                                    <div class="absolute h-screen w-full bg-black opacity-50"></div>
+                                    <div class="absolute w-1/2 h-auto bg-white shadow-sm shadow-green-400 rounded-xl p-3">
                                         <div class="flex w-full justify-end p-1">
                                             <button @click="open = false">
                                                 <i class="fa fa-times-circle text-green-900" aria-hidden="true"></i>
@@ -111,7 +114,7 @@ Users
                                         </div>
                                         <p class="text-2xl">User Info</p>
                                         <div class="p-6">
-                                            <form method="POST" action="{{ route('update_user') }}">
+                                            <form method="POST" action="{{ route('update_user', $user->id) }}">
                                                 @csrf
                                                 @METHOD('PUT')
                                                 <p class="w-full text-left">Employee Information:</p>
@@ -166,7 +169,8 @@ Users
                                               <div x-data="{ open: false }" class="w-1/2 m-1">
                                                 <button type="button" @click="open = true" class="bg-red-700 text-white p-1 w-full rounded-full">Delete User</button>
                                                 <div x-show="open" x-cloak class="absolute top-0 left-0 w-full h-screen flex justify-center items-center">
-                                                  <div class="h-auto bg-white shadow-sm shadow-green-400 rounded-xl p-3">
+                                                  <div class="absolute h-screen w-full bg-black opacity-50"></div>
+                                                  <div class="absolute h-auto bg-white shadow-sm shadow-green-400 rounded-xl p-3">
                                                     <h1>Are you sure to delete user?</h1>
                                                     <form method="POST" action="{{ route('delete_user', $user->id) }}">
                                                       @csrf

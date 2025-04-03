@@ -23,6 +23,27 @@ class Department extends Model
     }
 
     public static function all_departments() {
-        return Department::all();
+        return Department::leftjoin('employees', 'employees.id', '=', 'departments.manager_id')->select('departments.*', 'employees.fname', 'employees.mname', 'employees.lname')->get();
+    }
+
+    public static function update_department($request, $id) {
+        $department = Department::find($id);
+
+        $department->update([
+            'department_description' => $request['department_description'],
+            'department_code' => $request['department_code'],
+            'manager_id' => $request['manager_id']
+        ]);
+
+        if($department) {
+            return json_encode([
+                'message' => 'Department updated successfully!'
+            ]);
+        } else {
+            return json_encode([
+                'message' => 'Department update failed.'
+            ]);
+        }
+
     }
 }
