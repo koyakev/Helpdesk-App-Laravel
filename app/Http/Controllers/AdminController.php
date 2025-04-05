@@ -36,7 +36,7 @@ class AdminController extends Controller
         ]);
 
         if($validated->fails()) {
-            return redirect()->route('admin_users')->with('message', 'Invalid inputs');
+            return redirect()->route('admin_users')->with('message', 'Invalid inputs!');
         } else {
             if($request->password == $request->c_password){
                 $employee = json_decode(Employee::create_user($validated->validated()));
@@ -112,12 +112,12 @@ class AdminController extends Controller
         ]);
 
         if($validated->fails()) {
-
+            return redirect()->back()->with('message', 'Invalid Inputs!');
         } else {
             $validatedData = $validated->validated();
             $department = json_decode(Department::add_department($validatedData));
 
-            return redirect()->route('admin_departments')->with('message', $department->message);
+            return redirect()->back()->with('message', $department->message);
         }
     }
 

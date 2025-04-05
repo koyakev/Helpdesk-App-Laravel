@@ -7,6 +7,13 @@
         @vite('resources/css/app.css')
         <style>
             [x-cloak] { display: none !important; } /* Hides elements until Alpine initializes */
+            [x-trans] {
+                transition: all 0.7s ease;
+                transform: scale(0.95);
+            }
+            [x-trans].active {
+                transform: scale(1);
+            }
         </style>
     </head>
     <body>

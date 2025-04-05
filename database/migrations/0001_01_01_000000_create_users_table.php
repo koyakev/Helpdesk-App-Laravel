@@ -23,7 +23,6 @@ return new class extends Migration
             $table->integer('department');
             $table->string('position')->nullable();
             $table->integer('status')->default(1);
-            $table->integer('active')->default(0);
             $table->enum('role', ['L1', 'L2', 'L3', 'L4'])->default('L1');
             $table->integer('failed_login_attempts')->default(0);
             $table->timestamps();

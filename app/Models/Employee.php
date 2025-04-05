@@ -11,16 +11,16 @@ use App\Models\Department;
 
 class Employee extends Authenticatable
 {
-    protected $fillable = ['username', 'password', 'fname', 'mname', 'lname', 'email', 'emp_id', 'department', 'position', 'status', 'active', 'role', 'failed_login_attempts'];
+    protected $fillable = ['username', 'password', 'fname', 'mname', 'lname', 'email', 'emp_id', 'department', 'position', 'status', 'role', 'failed_login_attempts'];
 
     public static function login($credentials) {
         if (Auth::guard('employee')->attempt($credentials)) {
             $user = Employee::where('username', $credentials['username'])->first();
             
             if($user->status == 1) {
-              session()->put('user', $user);
               return json_encode([
-                  "message" => "success"
+                  "message" => "success",
+                  "data" => $user
               ]);
             } else {
               return json_encode([
@@ -29,26 +29,32 @@ class Employee extends Authenticatable
             }
         } else {
           $user = Employee::where('username', $credentials['username'])->first();
-
-          if($user->failed_login_attempts < 3) {
-            $user->update([
-              'failed_login_attempts' => $user->failed_login_attempts + 1
-            ]);
-          }
-
-          if($user->failed_login_attempts == 2) {
-            $user->update([
-              'status' => 0
-            ]);
-
+          
+          if($user) {
+            if($user->failed_login_attempts < 3) {
+              $user->update([
+                'failed_login_attempts' => $user->failed_login_attempts + 1
+              ]);
+            }
+  
+            if($user->failed_login_attempts == 2) {
+              $user->update([
+                'status' => 0
+              ]);
+  
+              return json_encode([
+                "message" => "User locked. Please contact ICT admin."
+              ]);
+            }
+  
             return json_encode([
-              "message" => "User locked. Please contact ICT admin."
+                "message" => "Invalid Credentials!"
+            ]);
+          } else {
+            return json_encode([
+              "message" => "User not found!"
             ]);
           }
-
-          return json_encode([
-              "message" => "Invalid Credentials"
-          ]);
         }
     }
 

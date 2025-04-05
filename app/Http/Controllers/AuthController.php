@@ -25,6 +25,7 @@ class AuthController extends Controller
         $user = json_decode(Employee::login($credentials));
 
         if($user->message == 'success') {
+            session()->put('user', $user->data);
             return redirect()->route('dashboard');
         }
 
